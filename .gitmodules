@@ -1,0 +1,3 @@
+[submodule "A3"]
+	path = A3
+	url = git@github.com:FOetker/A3.git
