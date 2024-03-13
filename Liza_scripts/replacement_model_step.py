@@ -34,10 +34,10 @@ import traceback
 
 import runcitadel
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent.parent))
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from A3 import fred
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent.parent))
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from A3.ValueNetworks.vn import import_vn
 
 CocaineNetwork = fred.CocaineNetwork
