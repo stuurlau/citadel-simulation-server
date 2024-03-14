@@ -63,6 +63,7 @@ _activity_searching = fred._activity_searching
 
 # Functions
 def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
+    time.sleep(1)
     """Performs one simulation step of the Replacement model"""
 
     ### GET THE VARIABLES NEEDED FOR THE SIMULATION STEP ###
