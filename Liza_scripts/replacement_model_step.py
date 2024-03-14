@@ -147,7 +147,7 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
 
     print('hoi')
     # Get the rest of the variables from the globals
-    print(globals['Kingpin Replacement Model'])
+    print(globals)
     step = int(globals['Kingpin Replacement Model']['Time Step (Day)'])
     print(step)
     timestamp_latest_kingpin_removed = int(globals['Kingpin Replacement Model']['_Time Step Latest Kingpin Removed'])
@@ -187,7 +187,7 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
         if debug:
             print('positions are not updated')
 
-    pos = {int(node['data']['id']): [node['position']['x'], node['position']['y']] for node in nodes} if 'position' in include else None
+    pos = {int(node['data']['id']): [node['position']['x'], node['position']['y'],node['position']['z']] for node in nodes} if 'position' in include else None
 
     ### INITIALIZE THE MODEL ###
 
