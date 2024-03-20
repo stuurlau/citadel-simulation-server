@@ -116,20 +116,21 @@ def transform_agents_to_Citadel_graph(model, include=[], pos=None, fixed_node_po
         between = nx.betweenness_centrality(graph)
 
     # TODO: this is not used now
-    if 'position' in include:
-        if pos is None:
-            fixed = None
-            threshold = 1e-4 #0.01
-            k = None # k=1000 is too limiting for initial conditions, but afterward, quite nice.
-        else:
-            fixed = fixed_node_pos # NOTE: in the future might want more nodes fixed --> [int(id) for id in pos.keys()]
-            threshold = 0.9
-            k = 1000
+    # if 'position' in include:
+    #     if pos is None:
+    #         fixed = None
+    #         threshold = 1e-4 #0.01
+    #         k = None # k=1000 is too limiting for initial conditions, but afterward, quite nice.
+    #         pos = nx.spring_layout(graph, pos = pos, weight = 'Trust', scale = (225 * np.log(len(agents))), k=k, threshold = threshold, fixed = fixed)
+
+        # else:
+        #     fixed = fixed_node_pos # NOTE: in the future might want more nodes fixed --> [int(id) for id in pos.keys()]
+        #     threshold = 0.9
+        #     k = 1000
 
         # TODO: include choice of layout by user? include: keep position fixed (of one node to be given as an integer).
         layout_options = ['_sparse_fruchterman_reingold', '_fruchterman_reingold', 'kamada_kawai_layout', 'shell_layout', 'spring_layout', 'spectral_layout']
         # pos = nx.layout('spring_layout', graph, pos=pos, weight='Trust', scale = (225 * np.log(len(agents))), fixed=fixed, threshold=threshold, k=k) # TODO: check if this works
-        pos = nx.spring_layout(graph, pos = pos, weight = 'Trust', scale = (225 * np.log(len(agents))), k=k, threshold = threshold, fixed = fixed)
 
     if 'distance' in include:
         # Get the distance to the removed kingpin
@@ -283,12 +284,13 @@ def transform_agents_to_Citadel_graph(model, include=[], pos=None, fixed_node_po
         # attrs = {k: attrs[k] for k in attrs_sorted}
 
         # Get the position of the node
+        # print('include',include)
         if 'position' in include:
             # add node
             nodes.append({
             "attributes": attrs,
             "id": id,
-            "position": {'x': pos[id][0], 'y': pos[id][1]}
+            "position": pos[id]#{'x': pos[id][0], 'y': pos[id][1]}
             })
         else:
             # add node

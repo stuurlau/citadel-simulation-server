@@ -66,16 +66,19 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
     time.sleep(1)
     """Performs one simulation step of the Replacement model"""
 
+    print('nodes position begin function: ')
+    print(nodes[0]['position'])
+
     ### GET THE VARIABLES NEEDED FOR THE SIMULATION STEP ###
 
     # Time the simulation step
     start_time = time.time()
 
     # Current step variables (to be reinitialized every step)
-    include = ['meeting', 'position'] # options: distance, SNA metrics, meeting, position, fitness
+    include = ['meeting','position'] # options: distance, SNA metrics, meeting, position, fitness
     conclave = None #if len([node['data']['In Conclave'] for node in nodes if 'In Conclave' in node['data'] and node['data']['In Conclave'] == True]) == 0 else []
     action = None
-    debug = True
+    debug = False
 
     if debug:
         print('Starting Replacement Model simulation step...')
@@ -148,9 +151,9 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
 
     print('hoi')
     # Get the rest of the variables from the globals
-    print(globals)
+    # print(globals)
     step = int(globals['Kingpin Replacement Model']['Time Step (Day)'])
-    print(step)
+    print('step',step)
     timestamp_latest_kingpin_removed = int(globals['Kingpin Replacement Model']['_Time Step Latest Kingpin Removed'])
     # print(timestamp_latest_kingpin_removed)
     events = [eval(event) for event in globals['Kingpin Replacement Model']['_Events'].split(' | ')] if isinstance(globals['Kingpin Replacement Model']['_Events'], str) and len(globals['Kingpin Replacement Model']['_Events']) > 0 else globals['Kingpin Replacement Model']['_Events']
@@ -182,14 +185,14 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
     #     runcitadel.send_message(connection, f'step {step} is being simulated.', 'log')
     #     runcitadel.finalize(connection, 'success')
 
-    if not update_positions:
-        include.remove('position')
+    # if not update_positions:
+    #     include.remove('position')
         
-        if debug:
-            print('positions are not updated')
+    #     if debug:
+    #         print('positions are not updated')
 
-    pos = {int(node['data']['id']): [node['position']['x'], node['position']['y'],node['position']['z']] for node in nodes} if 'position' in include else None
-
+    pos = {int(node['data']['id']): node['position'] for node in nodes} #if 'position' in include else None
+    # print('pos',pos)
     ### INITIALIZE THE MODEL ###
 
     if debug:
@@ -245,7 +248,7 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
     print('gets past the model translations')
     # Check the events
     # TODO: add the node transformation also for decide on new kingpin
-    print(model.scheduled_events)
+    # print(model.scheduled_events)
 
     for t, f, args in model.scheduled_events:
         if f.__name__ == 'event_kingpin_candidate_to_kingpin_main': # step == t and
@@ -259,8 +262,8 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
         #         args[0] = model.agents[args[0]]
         
         if f.__name__.lstrip('event_') == 'decide_on_new_kingpin':
-            print('in second place to change the kingping to id ')
-            print(t,f,args)
+            # print('in second place to change the kingping to id ')
+            # print(t,f,args)
 
             if isinstance(args, dict):
                 if isinstance(args['searching_replacement_for'],str):
@@ -269,13 +272,13 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
                     # [node],_ = transform_agents_to_Citadel_graph(copymodel, include=include, pos=pos, fixed_node_pos=fix_positions, conclave=conclave, debug=debug)
                     # args['searching_replacement_for'] = node
                     # model.graph, model.agents = transform_Citadel_to_agents_graph(model, nodes, edges, debug=False)
-                    print(args['searching_replacement_for'])
+                    # print(args['searching_replacement_for'])
                     node = eval(args['searching_replacement_for'])
-                    print(node)
-                    print('attributes : ')
-                    print({key.lower().replace(' ','_'):val for key,val in node.items() if key in ['Financial Capital','Criminal Capital','Violence Capital']})
-                    print('tags :')
-                    print({key.lower().replace(' ','_'):val.lower().replace(' ','_') for key,val in node.items() if key not in ['Financial Capital','Criminal Capital','Violence Capital','Unique Id']})
+                    # print(node)
+                    # print('attributes : ')
+                    # print({key.lower().replace(' ','_'):val for key,val in node.items() if key in ['Financial Capital','Criminal Capital','Violence Capital']})
+                    # print('tags :')
+                    # print({key.lower().replace(' ','_'):val.lower().replace(' ','_') for key,val in node.items() if key not in ['Financial Capital','Criminal Capital','Violence Capital','Unique Id']})
                     old_id = int(node["Unique Id"])
                     #agent = Node(model=model,attributes={},tags={'business_role':'kingpin'})
                     agent = Node(unique_id=old_id,model=model,
@@ -283,8 +286,8 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
                                  tags={key.lower().replace(' ','_'):val.lower().replace(' ','_') for key,val in node.items() if key not in ['Financial Capital','Criminal Capital','Violence Capital','Unique Id']}
                                  )
                     args['searching_replacement_for'] = agent
-                    print(dir(agent))
-                    pprint(vars(agent))
+                    # print(dir(agent))
+                    # pprint(vars(agent))
                     # exit()
 
                 # search for corresponding node : 
@@ -419,19 +422,19 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
         else:
             print(f'step {model.t}: {action}')
 
-    if debug:
-        print('gets past printing actions that happened before the step')
-        if step > 2:
-            # print(model.agents)
-            for id,agent in model.agents.items():
-            #     print(agent)
-            #     print(dir(agent))
-                #pprint(vars(agent))
-                print(agent.unique_id)
-            print('gets past printing all agents before the step')
+    # if debug:
+        # print('gets past printing actions that happened before the step')
+        # if step > 2:
+        #     # print(model.agents)
+        #     for id,agent in model.agents.items():
+        #     #     print(agent)
+        #     #     print(dir(agent))
+        #         #pprint(vars(agent))
+        #         # print(agent.unique_id)
+        #         print('gets past printing all agents before the step')
     ### MODEL STEP(s) AND MESSAGES ###
-    print(model.scheduled_events)
-    print(model.memory)
+    # print(model.scheduled_events)
+    # print(model.memory)
 
     # Perform "days_in_step" steps of the model
     for _ in range(days_in_step):
@@ -446,8 +449,8 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
                 if event[0] == 'event_single_kingpin_removal':
                     print(f'step {model.t}: {message}')
                     
-                    if 'position' in include:
-                        include.remove('position')
+                    # if 'position' in include:
+                    #     include.remove('position')
                 elif event[0] == 'event_decide_on_new_kingpin':
                     if isinstance(message, list):
                         print(f'step {model.t}: {message[0]}')
@@ -476,8 +479,8 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
 
 
     ### UPDATE THE GLOBAL VARIABLES ###
-    print('does this even happen?')
-    print('newly scheduled events : ',model.scheduled_events)
+    # print('does this even happen?')
+    # print('newly scheduled events : ',model.scheduled_events)
     # copy_events = copy.deepcopy(model.scheduled_events)
     # TODO: make more robust
     for t, f, args in model.scheduled_events:
@@ -488,19 +491,19 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
 #    for t, f, args in copy_events:
         if f.__name__.lstrip('event_') == 'decide_on_new_kingpin':
             if len(args) > 0:
-                print('args not empty list')
-                print(t,f,args)
+                # print('args not empty list')
+                # print(t,f,args)
                 if isinstance(args['searching_replacement_for'], Node):
-                    print('args = node')
-                    print('old arg : ',args['searching_replacement_for'])
-                    print('new arg : ',args['searching_replacement_for'].unique_id)
+                    # print('args = node')
+                    # print('old arg : ',args['searching_replacement_for'])
+                    # print('new arg : ',args['searching_replacement_for'].unique_id)
                     # args['searching_replacement_for'] = args['searching_replacement_for'].unique_id
                     # str(get_attrs(role_agents[0], hidden_attributes=[attr for attr in role_agents[0].__dict__ if attr not in ['tags', 'attributes', 'unique_id']])
                     # nodes, edges = transform_agents_to_Citadel_graph(model, include=include, pos=pos, fixed_node_pos=fix_positions, conclave=conclave, debug=debug)
                     # copymodel = model
                     # copymodel.agents = {args['searching_replacement_for'].unique_id : args['searching_replacement_for']}
                     # print(copymodel.agents)
-                    print(args['searching_replacement_for'])
+                    # print(args['searching_replacement_for'])
                     # print(attr for attr in args['searching_replacement_for'].__dict__)
                     print()  #attr for attr in args['searching_replacement_for'].__dict__ if attr not in ['tags', 'attributes', 'unique_id']
                     # print(get_attrs(args['searching_replacement_for'], hidden_attributes=[attr for attr in args['searching_replacement_for'].__dict__ if attr not in ['tags', 'attributes', 'unique_id']]))
@@ -522,7 +525,7 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
         # print()
         # print(str((t, f.__name__.lstrip('event_'), args)))
 
-    print(model.scheduled_events)
+    # print(model.scheduled_events)
                     
     globals['Kingpin Replacement Model']['Time Step (Day)'] = model.t
     globals['Kingpin Replacement Model']['_Time Step Latest Kingpin Removed'] = model.timestamp_latest_kingpin_removed
@@ -577,6 +580,7 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
         #terminate('The graph is empty.')
         return [None, None, None, None]
 
+    print('include',include)
     nodes, edges = transform_agents_to_Citadel_graph(model, include=include, pos=pos, fixed_node_pos=fix_positions, conclave=conclave, debug=False)
 
     if debug:
@@ -586,7 +590,10 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
     globals['Kingpin Replacement Model']['Run Time (s)'] = run_time + (end_time - start_time)
 
     # traceback.print_stack()
-    print(globals)
+    # print(globals)
+    print('nodes position end of function: ')
+    print(nodes[0]['position'])
+
 
     return [nodes, edges, params, globals]
 
