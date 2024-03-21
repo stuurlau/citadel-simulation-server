@@ -1,0 +1,45 @@
+Metadata-Version: 2.1
+Name: runcitadel
+Version: 2.0.0
+Summary: A package for developing and running citadel simulations.
+License: MIT
+Author: Miles van der Lely
+Requires-Python: >=3.9,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Dist: jsonschema (>=4.17.3,<5.0.0)
+Requires-Dist: websockets (>=10.4,<11.0)
+Description-Content-Type: text/markdown
+
+# runcitadel
+
+A package for developing and running citadel simulations.
+
+## Installation
+
+```bash
+$ pip install runcitadel
+```
+
+## Usage
+
+`runcitadel` can be used to connect a local simulation to a citadel session to perform
+interactive computation on graphs. For usage examples, see the examples notebook in /docs/.
+
+## Contributing
+
+Interested in contributing? Check out the contributing guidelines. Please note that this project is released with a Code of Conduct. By contributing to this project, you agree to abide by its terms.
+
+## License
+
+`runcitadel` was created by Miles van der Lely. It is licensed under the terms of the MIT license.
+
+## Credits
+
+`runcitadel` was created with [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/) and the `py-pkgs-cookiecutter` [template](https://github.com/py-pkgs/py-pkgs-cookiecutter).
+
+Developed in the Visualisation Lab at the University of Amsterdam (UvA).
+
