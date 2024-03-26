@@ -70,8 +70,8 @@ def ccrm_sim_step(connection, nodes, edges, params, globals) -> list:
     time.sleep(3)
     """Performs one simulation step of the Replacement model"""
 
-    print('nodes position begin function: ')
-    print(nodes[0]['data']['id'],nodes[0]['position'])
+    # print('nodes position begin function: ')
+    # print(nodes[0]['data']['id'],nodes[0]['position'])
 
 
     ### GET THE VARIABLES NEEDED FOR THE SIMULATION STEP ###
@@ -615,8 +615,8 @@ startParams = [{
             {
                 'attribute': 'Time to Kingpin Removal',
                 'type': 'integer',
-                'defaultValue': 4,
-                'value': 4,
+                'defaultValue': 3,
+                'value': 3,
                 'limits': {
                     'min': 1,
                     'max': 60

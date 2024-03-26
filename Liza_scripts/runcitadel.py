@@ -342,7 +342,7 @@ async def connect(url: str,
 
         while (1):
             response = await websocket.recv()
-            print(response)
+            # print(response)
 
             result = process_response(websocket, response, fun)
 
